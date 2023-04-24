@@ -10,7 +10,7 @@ def get_word_list(filename):
             for line in in_file:
                 words.append(line.strip())
     return words
-words_list = get_word_list("words-guess.txt")
+words_list = get_word_list("data/words-guess.txt")
 
 def get_frequency_data():
     dataset = pd.read_csv('data/unigram_freq.csv')

@@ -106,7 +106,7 @@ def get_word_list(filename):
    return words
 
 
-words_list = get_word_list("words-guess.txt")
+words_list = get_word_list("data/words-guess.txt")
 
 wordle = Wordle(words_list)
 

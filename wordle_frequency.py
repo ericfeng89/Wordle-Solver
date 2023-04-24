@@ -26,6 +26,7 @@ def get_frequency_data():
 
 
 freq_data = get_frequency_data()
+print(freq_data)
 
 # writing the filtered csv to the data folder so we don't need to repeat process
 freq_data.to_csv("data/filtered_freq_data.csv", index=False)

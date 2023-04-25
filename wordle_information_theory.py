@@ -3,15 +3,15 @@ import itertools
 
 
 def get_expected_entropy(word, words_list):
-    current_entropy = math.log(len(words_list), 2)
+    # current_entropy = math.log(len(words_list), 2)
 
-    new_list = naive_filter(words_list, ['_____'], [word])
-    all_grey = len(new_list)
-    print(all_grey)
-    print(new_list)
-    prob_orientation = len(new_list)/len(words_list)
+    # new_list = naive_filter(words_list, ['_____'], [word])
+    # all_grey = len(new_list)
+    # print(all_grey)
+    # print(new_list)
+    # prob_orientation = len(new_list)/len(words_list)
 
-    print(prob_orientation)
+   # print(prob_orientation)
 
 
 
@@ -40,7 +40,21 @@ def get_expected_entropy(word, words_list):
 
 
     # calculate the probability of each orientation occurring
-  #  for orientation in possible_orientations
+    entropy_sum = 0
+    for orientation in possible_orientations:
+        current_entropy = math.log(len(words_list), 2)
+
+        new_list = naive_filter(words_list, [orientation], [word])
+
+        if len(new_list) is not 0:
+            prob_orientation = len(new_list)/len(words_list)
+            new_entropy = math.log(len(new_list), 2)
+            entropy_sum += prob_orientation * (current_entropy - new_entropy)
+
+    print(entropy_sum)
+
+
+
     
 
 
@@ -110,4 +124,4 @@ def naive_filter(validGuesses, results, guesses):
 
 
 words_list = get_word_list("data/words-guess.txt")
-get_expected_entropy('tares', words_list)
+get_expected_entropy('fuzzy', words_list)

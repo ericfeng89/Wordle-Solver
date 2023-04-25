@@ -57,7 +57,7 @@ def plot_guess_log(seed, guess_log):
     fig, ax = plt.subplots()
     ax.set_xlabel('Number until correct for starting word ' + seed)
     ax.set_ylabel('Frequency of number of guesses')
-    ax.hist(guess_log, linewidth=0.5, edgecolor="white")
+    ax.hist(guess_log, bins=range(10), linewidth=0.5, edgecolor="white")
     plt.savefig('histograms/'+ seed + '.png')
 
 def plot_start_words(start_words, avg_guesses):

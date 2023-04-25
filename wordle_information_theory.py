@@ -68,57 +68,31 @@ def get_word_list(filename):
    return words
 
 def naive_filter(validGuesses, results, guesses):
-    # get last result and guess
     result = results[-1]
     lastGuess = guesses[-1]
 
-    greyFails = list()
-    for i in range(5):
-        if result[i] == '_':
-            # this letter should not be in the word
-            for guess in validGuesses:
-                if lastGuess[i] in guess:
-                    greyFails.append(guess)
-
-
-    greyGuesses = list()
+    failedWords = list()
     for guess in validGuesses:
-        if guess not in greyFails:
-            greyGuesses.append(guess)
-    
-    # yellow letters
-    yellowFails = list()
-    for i in range(5):
-        if result[i] == 'Y':
-            # this location should not be this letter but somewhere else should be
-            for guess in greyGuesses:
+        for i in range(5):
+            if result[i] == '_':
+                # this letter isn't in the word
+                if lastGuess[i] in guess:
+                    failedWords.append(guess)
+            elif result[i] == 'Y':
+                # this letter isn't here
                 if (lastGuess[i] not in guess) or (guess[i] == lastGuess[i]):
-                    yellowFails.append(guess)
-
-
-    yellowGuesses = list()
-    for guess in greyGuesses:
-        if guess not in yellowFails:
-            yellowGuesses.append(guess)
-
-
-    # put green letters in the right place
-    greenFails = list()
-    for i in range(5):
-        if result[i] == 'G':
-            # this location should be this letter
-            for guess in yellowGuesses:
+                    failedWords.append(guess)
+            elif result[i] == 'G':
+                # this location must be this letter
                 if guess[i] != lastGuess[i]:
-                    greenFails.append(guess)
-    
-    greenFilter = list()
-    for guess in yellowGuesses:
-        # add check for previous guess?
-        if guess not in greenFails:
-            greenFilter.append(guess)
+                    failedWords.append(guess)
 
-    return greenFilter
+    filteredGuesses = list()
+    for guess in validGuesses:
+        if guess not in failedWords:
+            filteredGuesses.append(guess)
 
+    return filteredGuesses
 
 words_list = get_word_list("data/words-guess.txt")
 possible_orientations = generate_possible_orientations()

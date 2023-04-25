@@ -1,6 +1,6 @@
 
 import random
-from wordle_naive import Wordle, play_game, words_list
+from wordle_naive import Wordle, words_list
 import matplotlib.pyplot as plt
 
 
@@ -43,7 +43,7 @@ def run_test(seed, verbose=True):
         game = Wordle(words_list, correct_word=ans)
         # going to use start word "raise" as recommended here: https://www.tomsguide.com/news/best-wordle-start-words
         # note: startword is standardized to control testing
-        guess_log.append(play_game(game, startword=seed, verbose=False))
+        guess_log.append(game.play_game(startword=seed, verbose=False))
 
     avg_guesses = sum(guess_log)/ len(guess_log)
 

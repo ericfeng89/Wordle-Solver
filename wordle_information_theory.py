@@ -39,8 +39,8 @@ def get_expected_entropy(word, words_list):
             new_entropy = math.log(len(new_list), 2)
             entropy_sum += prob_orientation * (current_entropy - new_entropy)
 
-    print(word)
-    print(entropy_sum)
+ #   print(word)
+ #   print(entropy_sum)
     return entropy_sum
 
 # choose highest entropy word from potential words
@@ -51,7 +51,7 @@ def choose_word(words_list):
     for word in words_list:
         expected_entropy = get_expected_entropy(word, words_list)
         if expected_entropy > max_entropy:
-            expected_entropy = max_entropy
+            max_entropy = expected_entropy
             max_word = word
 
     print(max_word)

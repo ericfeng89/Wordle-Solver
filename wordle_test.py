@@ -21,7 +21,7 @@ def get_test_words():
     testWords.remove('snafu')
     testWords.remove('guano')
     
-    return testWords[:100]
+    return testWords[:]
 
 testwords = get_test_words()
 
@@ -45,12 +45,20 @@ def run_test(seed, verbose=True):
         # note: startword is standardized to control testing
         guess_log.append(game.play_game(startword=seed, verbose=False))
 
+    plot_guess_log(seed, guess_log)
+
     avg_guesses = sum(guess_log)/ len(guess_log)
 
     if verbose: print("\naverage number of guesses for starting word {} is: {:.3f}".format(seed, avg_guesses))
 
     return avg_guesses
 
+def plot_guess_log(seed, guess_log):
+    fig, ax = plt.subplots()
+    ax.set_xlabel('Number until correct for starting word ' + seed)
+    ax.set_ylabel('Frequency of number of guesses')
+    ax.hist(guess_log, linewidth=0.5, edgecolor="white")
+    plt.savefig('histograms/'+ seed + '.png')
 
 def plot_start_words(start_words, avg_guesses):
     # Create a bar plot of the average guesses for each starting word

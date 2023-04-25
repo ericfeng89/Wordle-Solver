@@ -50,29 +50,25 @@ class Wordle:
       # get last result and guess
        result = self.results[-1]
        lastGuess = self.guesses[-1]
+       guessFilter = validGuesses[:]
 
-       failedWords = list()
        for guess in validGuesses:
            for i in range(5):
                if result[i] == '_':
-                   # this letter isn't in the word
                    if lastGuess[i] in guess:
-                       failedWords.append(guess)
+                       guessFilter.remove(guess)
+                       break 
                elif result[i] == 'Y':
-                   # this letter isn't here
                    if (lastGuess[i] not in guess) or (guess[i] == lastGuess[i]):
-                       failedWords.append(guess)
+                       guessFilter.remove(guess)
+                       break
                elif result[i] == 'G':
-                   # this location must be this letter
                    if guess[i] != lastGuess[i]:
-                       failedWords.append(guess)
+                       guessFilter.remove(guess)
+                       break
 
-       filteredGuesses = list()
-       for guess in validGuesses:
-           if guess not in failedWords:
-               filteredGuesses.append(guess)
+       return guessFilter
 
-       return filteredGuesses
 
     # play a wordle game with naive strat, given startword
     # returns i, the number of guesses to find the word

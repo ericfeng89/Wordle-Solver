@@ -8,7 +8,6 @@
 # https://www.kaggle.com/datasets/rtatman/english-word-frequency?resource=download
 
 import pandas as pd
-from wordle_naive import get_word_list
 
 # This code was originally used to create the csv file. Now that the csv is in the repo, we dont need to load
 # from the whole dataset
@@ -43,6 +42,23 @@ def load_frequency_data():
     freq_data = pd.read_csv('data/filtered_freq_data.csv')
     freq_dict = dict(zip(freq_data['word'], freq_data['count']))
     return freq_dict
+
+# takes in list of possible words, returns word of max frequency
+def get_highest_frequency_word(wordlist):
+    bestword = ''
+    bestfreq = -1
+    for word in wordlist:
+        if word not in freq_dict: 
+            print('ERROR: word ', word, 'not in frequency data')
+            continue
+
+        word_freq = freq_dict[word]
+        # if this word beats the best, choose this one
+        if word_freq > bestfreq:
+            bestfreq = word_freq
+            bestword = word
+    return bestword
+
 
 # dictionary of {word: frequency}, where higher frequency means more common
 freq_dict = load_frequency_data()

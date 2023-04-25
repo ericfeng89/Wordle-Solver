@@ -1,5 +1,6 @@
 import math
 import itertools
+from wordle_naive import words_list
 
 
 # generate all possible result orientations (e.g. 'GY_G_')
@@ -48,7 +49,12 @@ def choose_word(words_list):
     max_entropy = 0
     max_word = ""
 
-    for word in words_list:
+    for i, word in enumerate(words_list):
+        # Print the progress bar
+        progress = i / (len(words_list) - 1)
+        num_bars = int(progress * 40)
+        print('\r[{}{}] words tested: {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(words_list)), end='')
+
         expected_entropy = get_expected_entropy(word, words_list)
         if expected_entropy > max_entropy:
             max_entropy = expected_entropy
@@ -90,6 +96,7 @@ def naive_filter(validGuesses, results, guesses):
     return guessFilter
 
 
-words_list = get_word_list("data/words-guess.txt")
-possible_orientations = generate_possible_orientations()
-choose_word(words_list)
+if __name__ == '__main__':
+    
+    possible_orientations = generate_possible_orientations()
+    choose_word(words_list)

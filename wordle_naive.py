@@ -44,60 +44,61 @@ class Wordle:
        self.results.append(out)
        # Return True/False if you got the word right
        return word ==  self.correct_word
+   
+   # works well, I think we could use the old possible guess list rather than regenerating for future scaling
+   def naive_filter(self, validGuesses):
+      # get last result and guess
+       result = self.results[-1]
+       lastGuess = self.guesses[-1]
+
+       failedWords = list()
+       for guess in validGuesses:
+           for i in range(5):
+               if result[i] == '_':
+                   # this letter isn't in the word
+                   if lastGuess[i] in guess:
+                       failedWords.append(guess)
+               elif result[i] == 'Y':
+                   # this letter isn't here
+                   if (lastGuess[i] not in guess) or (guess[i] == lastGuess[i]):
+                       failedWords.append(guess)
+               elif result[i] == 'G':
+                   # this location must be this letter
+                   if guess[i] != lastGuess[i]:
+                       failedWords.append(guess)
+
+       filteredGuesses = list()
+       for guess in validGuesses:
+           if guess not in failedWords:
+               filteredGuesses.append(guess)
+
+       return filteredGuesses
+
+    # play a wordle game with naive strat, given startword
+    # returns i, the number of guesses to find the word
+   def play_game(self, startword, verbose=True):
+       if verbose: print('GUESSING: ', startword)
+        
+       prevGuess = startword
+       # simulate one game
+       possible_words = words_list
+       while(not (self.guess(prevGuess))):
+           if verbose: print('RESULT: ', self.results[len(self.guesses) - 1])
+           possible_words = self.naive_filter(possible_words)
+           if verbose: print('POSSIBLE ANSWERS: (', str(len(possible_words)), ') ' , possible_words)
+
+           nextGuess = random.choice(possible_words)
+           if verbose: print('GUESSING: ', nextGuess)
+           prevGuess = nextGuess
+
+       if verbose: 
+           if len(self.guesses) > 6: print(colored('Guess max (6) exceded', 'red'))
+           strout = 'correct word: '+ self.correct_word + ' found in ' + str(len(self.guesses)) + ' guesses!'
+           print(colored(strout, 'green'))
+
+       return len(self.guesses)
 
 
-# works well, I think we could use the old possible guess list rather than regenerating for future scaling
-def naive_filter(validGuesses, results, guesses):
-    # get last result and guess
-    result = results[-1]
-    lastGuess = guesses[-1]
-
-    greyFails = list()
-    for i in range(5):
-        if result[i] == '_':
-            # this letter should not be in the word
-            for guess in validGuesses:
-                if lastGuess[i] in guess:
-                    greyFails.append(guess)
-
-
-    greyGuesses = list()
-    for guess in validGuesses:
-        if guess not in greyFails:
-            greyGuesses.append(guess)
-    
-    # yellow letters
-    yellowFails = list()
-    for i in range(5):
-        if result[i] == 'Y':
-            # this location should not be this letter but somewhere else should be
-            for guess in greyGuesses:
-                if (lastGuess[i] not in guess) or (guess[i] == lastGuess[i]):
-                    yellowFails.append(guess)
-
-
-    yellowGuesses = list()
-    for guess in greyGuesses:
-        if guess not in yellowFails:
-            yellowGuesses.append(guess)
-
-
-    # put green letters in the right place
-    greenFails = list()
-    for i in range(5):
-        if result[i] == 'G':
-            # this location should be this letter
-            for guess in yellowGuesses:
-                if guess[i] != lastGuess[i]:
-                    greenFails.append(guess)
-    
-    greenFilter = list()
-    for guess in yellowGuesses:
-        # add check for previous guess?
-        if guess not in greenFails:
-            greenFilter.append(guess)
-
-    return greenFilter
 
 
 def get_word_list(filename):
@@ -107,32 +108,6 @@ def get_word_list(filename):
                words.append(line.strip())
    return words
 
-# play a wordle game with naive strat, given startword
-# returns i, the number of guesses to find the word
-def play_game(game, startword, verbose=True):
-    if verbose: print('GUESSING: ', startword)
-    game.guess(startword)
-    prevGuess = startword
-    # simulate one game
-    num_guesses = 1
-    possible_words = words_list
-    while(not (game.guess(prevGuess))):
-        if verbose: print('RESULT: ', game.results[num_guesses])
-        possible_words = naive_filter(possible_words, game.results, game.guesses)
-        if verbose: print('POSSIBLE ANSWERS: (', str(len(possible_words)), ') ' , possible_words)
-
-        nextGuess = random.choice(possible_words)
-        if verbose: print('GUESSING: ', nextGuess)
-        num_guesses = num_guesses + 1
-        prevGuess = nextGuess
-    
-    if verbose: 
-        if num_guesses > 6: print(colored('Guess max (6) exceded', 'red'))
-        strout = 'correct word: '+ game.correct_word + ' found in ' + str(num_guesses) + ' guesses!'
-        print(colored(strout, 'green'))
-    
-    return num_guesses
-
 
 words_list = get_word_list("data/words-guess.txt")
 
@@ -140,4 +115,4 @@ if __name__ == '__main__':
 
     wordle = Wordle(words_list)
 
-    play_game(wordle, 'tares')
+    wordle.play_game('tares')

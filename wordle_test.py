@@ -70,11 +70,12 @@ if __name__ == '__main__':
     popular_start_words = ['pzazz', 'risky', 'crate', 'fuzzy', 'raise']
     avg_guesses = []
     for seed in popular_start_words:
-        print('testing: ', seed)
+        print('testing: \t', seed)
         avg = run_test(seed, verbose=False)
+        print('avg guesses: \t', avg)
         avg_guesses.append(avg)
     
-    plot_start_words(popular_start_words, avg_guesses)
+    # plot_start_words(popular_start_words, avg_guesses)
 
     
     

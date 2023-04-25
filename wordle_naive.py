@@ -1,6 +1,7 @@
 import random
 from termcolor import colored
 from wordle_frequency import get_highest_frequency_word
+from wordle_information_theory import choose_word
 
 
 ### Taken from the github repo
@@ -91,6 +92,8 @@ class Wordle:
             # if hueristic == 'entropy': sleep(1) eric add urs here
             else: nextGuess = random.choice(possible_words)
 
+            if hueristic == 'entropy': nextGuess = choose_word(possible_words) # imported
+
             if verbose: print('GUESSING: ', nextGuess)
             prevGuess = nextGuess
 
@@ -118,15 +121,15 @@ if __name__ == '__main__':
 
     wordle = Wordle(words_list)
     wordle2 = Wordle(words_list, correct_word=wordle.correct_word)
-    #wordle3 = Wordle(words_list, correct_word=wordle.correct_word)
+    wordle3 = Wordle(words_list, correct_word=wordle.correct_word)
 
     print('correct word: ', wordle.correct_word)
 
     num_guesses = wordle.play_game('raise', verbose=False, hueristic='naive')
     num_guesses2 = wordle2.play_game('raise', verbose=False, hueristic='frequency')
-    # num_guesses3 = wordle2.play_game('raise', verbose=False, hueristic='naive')
+    num_guesses3 = wordle3.play_game('raise', verbose=False, hueristic='entropy')
     
 
     print('Solved with naive hueristic in     ', num_guesses, ' guesses')
     print('solved with frequency heuristic in ', num_guesses2, ' guesses')
-    # print('solved with entropy heuristic in     ', num_guesses3, ' guesses')
+    print('solved with entropy heuristic in     ', num_guesses3, ' guesses')

@@ -43,7 +43,7 @@ def get_expected_entropy(word, words_list):
     print(entropy_sum)
     return entropy_sum
 
-
+# choose highest entropy word from potential words
 def choose_word(words_list):
     max_entropy = 0
     max_word = ""

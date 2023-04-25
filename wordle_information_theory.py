@@ -2,21 +2,9 @@ import math
 import itertools
 
 
-def get_expected_entropy(word, words_list):
-    # current_entropy = math.log(len(words_list), 2)
+# generate all possible result orientations (e.g. 'GY_G_')
+def generate_possible_orientations():
 
-    # new_list = naive_filter(words_list, ['_____'], [word])
-    # all_grey = len(new_list)
-    # print(all_grey)
-    # print(new_list)
-    # prob_orientation = len(new_list)/len(words_list)
-
-   # print(prob_orientation)
-
-
-
-
-    # generate all possible result orientations (e.g. 'GY_G_')
     possible_orientations = []
     wordle = "_____"
     colors = ["G", "Y", "_"]
@@ -34,10 +22,9 @@ def get_expected_entropy(word, words_list):
             new_wordle[blank] = combo[i]
         possible_orientations.append("".join(new_wordle))
 
-    print(possible_orientations)
+    return possible_orientations
 
-
-
+def get_expected_entropy(word, words_list):
 
     # calculate the probability of each orientation occurring
     entropy_sum = 0
@@ -45,17 +32,30 @@ def get_expected_entropy(word, words_list):
         current_entropy = math.log(len(words_list), 2)
 
         new_list = naive_filter(words_list, [orientation], [word])
+     #   new_list = words_list
 
-        if len(new_list) is not 0:
+        if len(new_list) != 0:
             prob_orientation = len(new_list)/len(words_list)
             new_entropy = math.log(len(new_list), 2)
             entropy_sum += prob_orientation * (current_entropy - new_entropy)
 
+    print(word)
     print(entropy_sum)
+    return entropy_sum
 
 
+def choose_word(words_list):
+    max_entropy = 0
+    max_word = ""
 
-    
+    for word in words_list:
+        expected_entropy = get_expected_entropy(word, words_list)
+        if expected_entropy > max_entropy:
+            expected_entropy = max_entropy
+            max_word = word
+
+    print(max_word)
+    return max_word
 
 
 
@@ -120,8 +120,6 @@ def naive_filter(validGuesses, results, guesses):
     return greenFilter
 
 
-# def choose_word(words_list):
-
-
 words_list = get_word_list("data/words-guess.txt")
-get_expected_entropy('fuzzy', words_list)
+possible_orientations = generate_possible_orientations()
+choose_word(words_list)

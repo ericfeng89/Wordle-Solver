@@ -10,6 +10,21 @@
 import pandas as pd
 from wordle_naive import get_word_list
 
+# This code was originally used to create the csv file. Now that the csv is in the repo, we dont need to load
+# from the whole dataset
+'''
+words_list = get_word_list("data/words-guess.txt")
+# pandas dataframe with columns 'word', 'count', where higher counts mean more frequent words
+freq_data = get_frequency_data(words_list)
+# get dictionary of words mapped to their frequencies, can scale freq's here if necessary
+freq_dict = dict(zip(freq_data['word'], freq_data['count']))
+#print(freq_dict)
+# maybe reference this var from other files ie: from wordle_frequency import freq_dict
+
+# writing the filtered csv to the data folder so we don't need to repeat process
+freq_data.to_csv("data/filtered_freq_data.csv", index=False)
+'''
+
 # param words_list: list of valid words to be checked against whin importing freq ds
 def get_frequency_data(words_list):
     dataset = pd.read_csv('data/unigram_freq.csv')
@@ -22,14 +37,12 @@ def get_frequency_data(words_list):
     dataset.sort_values(by=['count'])
     return dataset.reset_index(drop=True)
 
+# this function can be called now that the data is already loaded into a csv
+# returns a dictionary of {word: frequency}, where higher frequency means more common
+def load_frequency_data():
+    freq_data = pd.read_csv('data/filtered_freq_data.csv')
+    freq_dict = dict(zip(freq_data['word'], freq_data['count']))
+    return freq_dict
 
-words_list = get_word_list("data/words-guess.txt")
-# pandas dataframe with columns 'word', 'count', where higher counts mean more frequent words
-freq_data = get_frequency_data(words_list)
-# get dictionary of words mapped to their frequencies, can scale freq's here if necessary
-freq_dict = dict(zip(freq_data['word'], freq_data['count']))
-#print(freq_dict)
-# maybe reference this var from other files ie: from wordle_frequency import freq_dict
-
-# writing the filtered csv to the data folder so we don't need to repeat process
-freq_data.to_csv("data/filtered_freq_data.csv", index=False)
+# dictionary of {word: frequency}, where higher frequency means more common
+freq_dict = load_frequency_data()

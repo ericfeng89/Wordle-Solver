@@ -81,7 +81,7 @@ class Wordle:
         prevGuess = startword
         # simulate one game
         possible_words = words_list
-        while(not (self.guess(prevGuess))):
+        while(not(self.guess(prevGuess))):
             if verbose: print('RESULT: ', self.results[len(self.guesses) - 1])
             possible_words = self.naive_filter(possible_words)
             if verbose: print('POSSIBLE ANSWERS: (', str(len(possible_words)), ') ' , possible_words)
@@ -89,8 +89,9 @@ class Wordle:
             # here is where we choose the next word, based on the possible options
             nextGuess = ''
             if hueristic == 'frequency': nextGuess = get_highest_frequency_word(possible_words) # imported from wordle_frequency file
-            # if hueristic == 'entropy': sleep(1) eric add urs here
-            else: nextGuess = random.choice(possible_words)
+            
+            # else: nextGuess = random.choice(possible_words)
+            if hueristic == 'naive' : nextGuess = random.choice(possible_words)
 
             if hueristic == 'entropy': nextGuess = choose_word(possible_words) # imported
 

@@ -53,7 +53,8 @@ def choose_word(words_list):
             progress = i / (len(words_list) - 1)
             num_bars = int(progress * 40)
             print('\r[{}{}] words tested: {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(words_list)), end='')
-
+        else:
+            return words_list[0]
         expected_entropy = get_expected_entropy(word, words_list)
         if expected_entropy > max_entropy:
             max_entropy = expected_entropy

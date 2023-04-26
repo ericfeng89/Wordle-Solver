@@ -43,8 +43,9 @@ def get_expected_entropy(word, words_list):
     return entropy_sum
 
 # choose highest entropy word from potential words
-def choose_word(words_list):
-    max_entropy = 0
+# fixed this: it looks like some entropies could be <= 0, so init of max should be lower than 0
+def choose_word(words_list, verbose=True):
+    max_entropy = -1
     max_word = ""
 
     for i, word in enumerate(words_list):
@@ -52,15 +53,16 @@ def choose_word(words_list):
         if (len(words_list) > 1):
             progress = i / (len(words_list) - 1)
             num_bars = int(progress * 40)
-            print('\r[{}{}] words tested: {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(words_list)), end='')
-        else:
-            return words_list[0]
+
+            if verbose: print('\r[{}{}] words tested: {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(words_list)), end='')
+
         expected_entropy = get_expected_entropy(word, words_list)
         if expected_entropy > max_entropy:
             max_entropy = expected_entropy
             max_word = word
 
-    print(max_word)
+    #if verbose: 
+    print('(entropy) choosing: ', max_word, 'with entropy ', max_entropy)
     return max_word
 
 def get_word_list(filename):

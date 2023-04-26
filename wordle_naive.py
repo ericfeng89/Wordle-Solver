@@ -89,11 +89,9 @@ class Wordle:
             # here is where we choose the next word, based on the possible options
             nextGuess = ''
             if hueristic == 'frequency': nextGuess = get_highest_frequency_word(possible_words) # imported from wordle_frequency file
-            
-            # else: nextGuess = random.choice(possible_words)
-            if hueristic == 'naive' : nextGuess = random.choice(possible_words)
+            if hueristic == 'entropy': nextGuess = choose_word(possible_words, verbose=False)   # imported from wordle_info_theory
+            else: nextGuess = random.choice(possible_words)
 
-            if hueristic == 'entropy': nextGuess = choose_word(possible_words) # imported
 
             if verbose: print('GUESSING: ', nextGuess)
             prevGuess = nextGuess
@@ -120,7 +118,7 @@ words_list = get_word_list("data/words-guess.txt")
 
 if __name__ == '__main__':
 
-    wordle = Wordle(words_list)
+    wordle = Wordle(words_list, correct_word='arrow')
     wordle2 = Wordle(words_list, correct_word=wordle.correct_word)
     wordle3 = Wordle(words_list, correct_word=wordle.correct_word)
 

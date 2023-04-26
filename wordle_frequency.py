@@ -41,6 +41,8 @@ def get_frequency_data(words_list):
 def load_frequency_data():
     freq_data = pd.read_csv('data/filtered_freq_data.csv')
     freq_dict = dict(zip(freq_data['word'], freq_data['count']))
+    # idk why this word isn't in the ds, adding to prevent error
+    freq_dict['wooer'] = 10000
     return freq_dict
 
 # takes in list of possible words, returns word of max frequency

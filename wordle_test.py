@@ -21,13 +21,13 @@ def get_test_words():
     testWords.remove('snafu')
     testWords.remove('guano')
     
-    return testWords[:]
+    return testWords[:100]      # 674 total
 
 testwords = get_test_words()
 
 # run all testwords given start word seed
 # displays progress bar if verbose=true (default)
-def run_test(seed, verbose=True):
+def run_test(seed, verbose=True, heuristic='naive'):
     #testwords = get_test_words()
 
     if verbose: print('Testing wordle bot on ', len(testwords), ' previous wordle answers with starting guess: ', seed)
@@ -38,14 +38,14 @@ def run_test(seed, verbose=True):
         # Print the progress bar
         progress = i / (len(testwords) - 1)
         num_bars = int(progress * 40)
-        if verbose: print('\r[{}{}] {}'.format('#' * num_bars, '-' * (40 - num_bars), i+1), end='')
+        if verbose: print('\r[{}{}] {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(testwords)), end='')
 
         game = Wordle(words_list, correct_word=ans)
         # going to use start word "raise" as recommended here: https://www.tomsguide.com/news/best-wordle-start-words
         # note: startword is standardized to control testing
-        guess_log.append(game.play_game(startword=seed, verbose=False))
+        guess_log.append(game.play_game(startword=seed, verbose=False, heuristic=heuristic))
 
-    plot_guess_log(seed, guess_log)
+    plot_guess_log(seed + '_' + heuristic, guess_log)
 
     avg_guesses = sum(guess_log)/ len(guess_log)
 
@@ -57,7 +57,14 @@ def plot_guess_log(seed, guess_log):
     fig, ax = plt.subplots()
     ax.set_xlabel('Number until correct for starting word ' + seed)
     ax.set_ylabel('Frequency of number of guesses')
-    ax.hist(guess_log, linewidth=0.5, edgecolor="white")
+    ax.hist(guess_log, bins=range(10), linewidth=0.5, edgecolor="white")
+
+    mean_guesses = sum(guess_log)/len(guess_log)
+    plt.axvline(x=mean_guesses, color='r', linestyle='--')
+
+    plt.text(mean_guesses+0.1, 0.9*ax.get_ylim()[1], 'Mean: {:.2f}'.format(mean_guesses), color='r', fontsize=14)
+
+
     plt.savefig('histograms/'+ seed + '.png')
 
 def plot_start_words(start_words, avg_guesses):
@@ -74,12 +81,16 @@ def plot_start_words(start_words, avg_guesses):
     plt.show()
 
 if __name__ == '__main__':
-
-    popular_start_words = ['pzazz', 'risky', 'crate', 'fuzzy', 'raise']
+    # Entropy is breaking on first iter of second word
+    popular_start_words = ['raise', 'crate']
     avg_guesses = []
     for seed in popular_start_words:
         print('testing: \t', seed)
-        avg = run_test(seed, verbose=False)
+        # try for each heuristic
+        ### NOTE: second try of entropy does not work for some reason
+        for h in ['naive', 'frequency', 'entropy']:
+            avg = run_test(seed, verbose=True, heuristic=h)
+            print('\navg guesses for ', h, ': \t', avg)
         print('avg guesses: \t', avg)
         avg_guesses.append(avg)
     

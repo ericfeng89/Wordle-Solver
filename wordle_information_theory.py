@@ -1,7 +1,5 @@
 import math
 import itertools
-from wordle_naive import words_list
-
 
 # generate all possible result orientations (e.g. 'GY_G_')
 def generate_possible_orientations():
@@ -32,7 +30,7 @@ def get_expected_entropy(word, words_list):
     for orientation in possible_orientations:
         current_entropy = math.log(len(words_list), 2)
 
-        new_list = naive_filter(words_list, [orientation], [word])
+        new_list = filter(words_list, [orientation], [word])
      #   new_list = words_list
 
         if len(new_list) != 0:
@@ -45,26 +43,26 @@ def get_expected_entropy(word, words_list):
     return entropy_sum
 
 # choose highest entropy word from potential words
-def choose_word(words_list):
-    max_entropy = 0
+# fixed this: it looks like some entropies could be <= 0, so init of max should be lower than 0
+def choose_word(words_list, verbose=True):
+    max_entropy = -1
     max_word = ""
 
     for i, word in enumerate(words_list):
         # Print the progress bar
-        progress = i / (len(words_list) - 1)
-        num_bars = int(progress * 40)
-        print('\r[{}{}] words tested: {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(words_list)), end='')
+        if (len(words_list) > 1):
+            progress = i / (len(words_list) - 1)
+            num_bars = int(progress * 40)
+
+            if verbose: print('\r[{}{}] words tested: {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(words_list)), end='')
 
         expected_entropy = get_expected_entropy(word, words_list)
         if expected_entropy > max_entropy:
             max_entropy = expected_entropy
             max_word = word
 
-    print(max_word)
+    if verbose: print('(entropy) choosing: ', max_word, 'with entropy ', max_entropy)
     return max_word
-
-
-
 
 def get_word_list(filename):
    words = []
@@ -73,7 +71,7 @@ def get_word_list(filename):
                words.append(line.strip())
    return words
 
-def naive_filter(validGuesses, results, guesses):
+def filter(validGuesses, results, guesses):
     result = results[-1]
     lastGuess = guesses[-1]
     guessFilter = validGuesses[:]
@@ -95,8 +93,4 @@ def naive_filter(validGuesses, results, guesses):
 
     return guessFilter
 
-
-if __name__ == '__main__':
-    
-    possible_orientations = generate_possible_orientations()
-    choose_word(words_list)
+possible_orientations = generate_possible_orientations()

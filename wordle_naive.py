@@ -1,5 +1,7 @@
 import random
 from termcolor import colored
+from wordle_frequency import get_highest_frequency_word
+from wordle_information_theory import choose_word
 
 
 ### Taken from the github repo
@@ -72,27 +74,34 @@ class Wordle:
 
     # play a wordle game with naive strat, given startword
     # returns i, the number of guesses to find the word
-   def play_game(self, startword, verbose=True):
-       if verbose: print('GUESSING: ', startword)
-        
-       prevGuess = startword
-       # simulate one game
-       possible_words = words_list
-       while(not (self.guess(prevGuess))):
-           if verbose: print('RESULT: ', self.results[len(self.guesses) - 1])
-           possible_words = self.naive_filter(possible_words)
-           if verbose: print('POSSIBLE ANSWERS: (', str(len(possible_words)), ') ' , possible_words)
+    # uses naive (random) word choice approach by default
+   def play_game(self, startword, verbose=True, heuristic='naive'):
+        if verbose: print('GUESSING: ', startword)
+            
+        prevGuess = startword
+        # simulate one game
+        possible_words = words_list
+        while(not(self.guess(prevGuess))):
+            if verbose: print('RESULT: ', self.results[len(self.guesses) - 1])
+            possible_words = self.naive_filter(possible_words)
+            if verbose: print('POSSIBLE ANSWERS: (', str(len(possible_words)), ') ' , possible_words)
 
-           nextGuess = random.choice(possible_words)
-           if verbose: print('GUESSING: ', nextGuess)
-           prevGuess = nextGuess
+            # here is where we choose the next word, based on the possible options
+            nextGuess = ''
+            if heuristic == 'frequency': nextGuess = get_highest_frequency_word(possible_words) # imported from wordle_frequency file
+            elif heuristic == 'entropy': nextGuess = choose_word(possible_words, verbose=False)   # imported from wordle_info_theory
+            else: nextGuess = random.choice(possible_words)
 
-       if verbose: 
-           if len(self.guesses) > 6: print(colored('Guess max (6) exceded', 'red'))
-           strout = 'correct word: '+ self.correct_word + ' found in ' + str(len(self.guesses)) + ' guesses!'
-           print(colored(strout, 'green'))
 
-       return len(self.guesses)
+            if verbose: print('GUESSING: ', nextGuess)
+            prevGuess = nextGuess
+
+        if verbose: 
+            if len(self.guesses) > 6: print(colored('Guess max (6) exceded', 'red'))
+            strout = 'correct word: '+ self.correct_word + ' found in ' + str(len(self.guesses)) + ' guesses!'
+            print(colored(strout, 'green'))
+
+        return len(self.guesses)
 
 
 
@@ -109,6 +118,17 @@ words_list = get_word_list("data/words-guess.txt")
 
 if __name__ == '__main__':
 
-    wordle = Wordle(words_list)
+    wordle = Wordle(words_list, correct_word='arrow')
+    wordle2 = Wordle(words_list, correct_word=wordle.correct_word)
+    wordle3 = Wordle(words_list, correct_word=wordle.correct_word)
 
-    wordle.play_game('tares')
+    print('correct word: ', wordle.correct_word)
+
+    num_guesses = wordle.play_game('raise', verbose=False, heuristic='naive')
+    num_guesses2 = wordle2.play_game('raise', verbose=False, heuristic='frequency')
+    num_guesses3 = wordle3.play_game('raise', verbose=False, heuristic='entropy')
+    
+
+    print('Solved with naive heuristic in     ', num_guesses, ' guesses')
+    print('solved with frequency heuristic in ', num_guesses2, ' guesses')
+    print('solved with entropy heuristic in   ', num_guesses3, ' guesses')

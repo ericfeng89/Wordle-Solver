@@ -75,7 +75,7 @@ class Wordle:
     # play a wordle game with naive strat, given startword
     # returns i, the number of guesses to find the word
     # uses naive (random) word choice approach by default
-   def play_game(self, startword, verbose=True, hueristic='naive'):
+   def play_game(self, startword, verbose=True, heuristic='naive'):
         if verbose: print('GUESSING: ', startword)
             
         prevGuess = startword
@@ -88,8 +88,8 @@ class Wordle:
 
             # here is where we choose the next word, based on the possible options
             nextGuess = ''
-            if hueristic == 'frequency': nextGuess = get_highest_frequency_word(possible_words) # imported from wordle_frequency file
-            if hueristic == 'entropy': nextGuess = choose_word(possible_words, verbose=False)   # imported from wordle_info_theory
+            if heuristic == 'frequency': nextGuess = get_highest_frequency_word(possible_words) # imported from wordle_frequency file
+            if heuristic == 'entropy': nextGuess = choose_word(possible_words, verbose=False)   # imported from wordle_info_theory
             else: nextGuess = random.choice(possible_words)
 
 
@@ -124,11 +124,11 @@ if __name__ == '__main__':
 
     print('correct word: ', wordle.correct_word)
 
-    num_guesses = wordle.play_game('raise', verbose=False, hueristic='naive')
-    num_guesses2 = wordle2.play_game('raise', verbose=False, hueristic='frequency')
-    num_guesses3 = wordle3.play_game('raise', verbose=False, hueristic='entropy')
+    num_guesses = wordle.play_game('raise', verbose=False, heuristic='naive')
+    num_guesses2 = wordle2.play_game('raise', verbose=False, heuristic='frequency')
+    num_guesses3 = wordle3.play_game('raise', verbose=False, heuristic='entropy')
     
 
-    print('Solved with naive hueristic in     ', num_guesses, ' guesses')
+    print('Solved with naive heuristic in     ', num_guesses, ' guesses')
     print('solved with frequency heuristic in ', num_guesses2, ' guesses')
-    print('solved with entropy heuristic in     ', num_guesses3, ' guesses')
+    print('solved with entropy heuristic in   ', num_guesses3, ' guesses')

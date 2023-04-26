@@ -61,8 +61,7 @@ def choose_word(words_list, verbose=True):
             max_entropy = expected_entropy
             max_word = word
 
-    #if verbose: 
-    print('(entropy) choosing: ', max_word, 'with entropy ', max_entropy)
+    if verbose: print('(entropy) choosing: ', max_word, 'with entropy ', max_entropy)
     return max_word
 
 def get_word_list(filename):

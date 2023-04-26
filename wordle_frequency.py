@@ -45,20 +45,20 @@ def load_frequency_data():
 
 # takes in list of possible words, returns word of max frequency
 def get_highest_frequency_word(wordlist):
-    bestword = ''
+    bestword = wordlist[0]
     bestfreq = -1
     for word in wordlist:
-        if word not in freq_dict: 
+        if word not in FREQ_DICT: 
             print('ERROR: word ', word, 'not in frequency data')
             continue
 
-        word_freq = freq_dict[word]
+        word_freq = FREQ_DICT[word]
+
         # if this word beats the best, choose this one
         if word_freq > bestfreq:
             bestfreq = word_freq
             bestword = word
     return bestword
 
-
 # dictionary of {word: frequency}, where higher frequency means more common
-freq_dict = load_frequency_data()
+FREQ_DICT = load_frequency_data()

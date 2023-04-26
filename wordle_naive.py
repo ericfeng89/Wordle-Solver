@@ -89,7 +89,7 @@ class Wordle:
             # here is where we choose the next word, based on the possible options
             nextGuess = ''
             if heuristic == 'frequency': nextGuess = get_highest_frequency_word(possible_words) # imported from wordle_frequency file
-            if heuristic == 'entropy': nextGuess = choose_word(possible_words, verbose=False)   # imported from wordle_info_theory
+            elif heuristic == 'entropy': nextGuess = choose_word(possible_words, verbose=False)   # imported from wordle_info_theory
             else: nextGuess = random.choice(possible_words)
 
 

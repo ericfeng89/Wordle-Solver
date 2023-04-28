@@ -59,7 +59,6 @@ def two_word_strategy(possible_words):
 
             q.put((len(differentLetters) - numDiff, word))
 
-        print(q.get())
         return q.get()[1]
 
     return random.choice(possible_words)

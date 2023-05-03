@@ -44,7 +44,8 @@ def run_test(seed, verbose=True, heuristic='naive'):
         # going to use start word "raise" as recommended here: https://www.tomsguide.com/news/best-wordle-start-words
         # note: startword is standardized to control testing
         guess_log.append(game.play_game(startword=seed, verbose=False, heuristic=heuristic))
-
+        if guess_log[len(guess_log) - 1] > 6: print('\t failure for word {}'.format(ans))
+        
     plot_guess_log(seed + '_' + heuristic, guess_log)
 
     avg_guesses = sum(guess_log)/ len(guess_log)
@@ -82,13 +83,13 @@ def plot_start_words(start_words, avg_guesses):
 
 if __name__ == '__main__':
     # Entropy is breaking on first iter of second word
-    popular_start_words = ['raise', 'crate']
+    popular_start_words = ['raise', 'crane']
     avg_guesses = []
     for seed in popular_start_words:
         print('testing: \t', seed)
         # try for each heuristic
         ### NOTE: second try of entropy does not work for some reason
-        for h in ['naive', 'frequency', 'entropy']:
+        for h in ['naive', 'frequency', 'entropy', 'two_word']:
             avg = run_test(seed, verbose=True, heuristic=h)
             print('\navg guesses for ', h, ': \t', avg)
         print('avg guesses: \t', avg)

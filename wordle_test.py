@@ -26,7 +26,6 @@ def get_test_words():
     testWords.remove('guano')
     
     return testWords[:TEST_SIZE]      # 674 total
-
 testwords = get_test_words()
 
 # run all testwords given start word seed
@@ -47,7 +46,8 @@ def run_test(seed, verbose=True, heuristic='naive'):
         game = Wordle(words_list, correct_word=ans)
         # note: startword is standardized to control testing
         guess_log.append(game.play_game(startword=seed, verbose=False, heuristic=heuristic))
-
+        if guess_log[len(guess_log) - 1] > 6: print('\t failure for word {}'.format(ans))
+        
     plot_guess_log(seed + '_' + heuristic, guess_log)
 
     avg_guesses = sum(guess_log)/ len(guess_log)
@@ -84,7 +84,7 @@ def plot_start_words(start_words, avg_guesses):
     plt.show()
 
 if __name__ == '__main__':
-
+    
     # add other starting words you want to assess to this list
     popular_start_words = ['raise']
     avg_guesses = []
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         print('testing: \t', seed)
         # try for each heuristic
         ### NOTE: second try of entropy does not work for some reason
-        for h in ['naive', 'frequency', 'entropy']:
+        for h in ['two_word']:
             avg = run_test(seed, verbose=True, heuristic=h)
             print('\navg guesses for ', h, ': \t', avg)
         

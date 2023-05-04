@@ -2,6 +2,7 @@ import random
 from termcolor import colored
 from wordle_frequency import get_highest_frequency_word
 from wordle_information_theory import choose_word
+from two_word import two_word_strategy
 
 
 ### Source: gamescomputersplay (https://github.com/gamescomputersplay)
@@ -95,6 +96,7 @@ class Wordle:
             nextGuess = ''
             if heuristic == 'frequency': nextGuess = get_highest_frequency_word(possible_words) # imported from wordle_frequency file
             elif heuristic == 'entropy': nextGuess = choose_word(possible_words, verbose=False)   # imported from wordle_info_theory
+            elif heuristic == 'two_word': nextGuess = two_word_strategy(possible_words, len(self.results), self.guesses) # imported from two_word
             else: nextGuess = random.choice(possible_words)
 
 
@@ -137,14 +139,16 @@ if __name__ == '__main__':
     wordle = Wordle(words_list, correct_word=solution)
     wordle2 = Wordle(words_list, correct_word=wordle.correct_word)
     wordle3 = Wordle(words_list, correct_word=wordle.correct_word)
-
-    print('correct word: ', wordle.correct_word)
+    wordle4 = Wordle(words_list, correct_word=wordle.correct_word)
+    # cinch, catch, foyer, wooer, craze, parer, droll, chill, conic, jaunt
+    print('correct word: ', wordle4.correct_word)
 
     num_guesses = wordle.play_game(startWord, verbose=False, heuristic='naive')
     num_guesses2 = wordle2.play_game(startWord, verbose=False, heuristic='frequency')
     num_guesses3 = wordle3.play_game(startWord, verbose=False, heuristic='entropy')
-    
+    num_guesses4 = wordle4.play_game(startWord, verbose=False, heuristic='two_word')
 
     print('Solved with naive heuristic in     ', num_guesses, ' guesses')
     print('solved with frequency heuristic in ', num_guesses2, ' guesses')
     print('solved with entropy heuristic in   ', num_guesses3, ' guesses')
+    print('solved with two word heuristic in   ', num_guesses4, ' guesses')

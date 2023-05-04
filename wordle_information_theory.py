@@ -31,7 +31,6 @@ def get_expected_entropy(word, words_list):
         current_entropy = math.log(len(words_list), 2)
 
         new_list = filter(words_list, [orientation], [word])
-     #   new_list = words_list
 
         if len(new_list) != 0:
             prob_orientation = len(new_list)/len(words_list)

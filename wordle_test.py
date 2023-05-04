@@ -26,14 +26,15 @@ def get_test_words():
     testWords.remove('guano')
     
     return testWords[:TEST_SIZE]      # 674 total
+
+# global, can be imported into other files
 testwords = get_test_words()
 
 # run all testwords given start word seed
 # displays progress bar if verbose=true (default)
 def run_test(seed, verbose=True, heuristic='naive'):
-    #testwords = get_test_words()
 
-    if verbose: print('Testing wordle bot on ', len(testwords), ' previous wordle answers with starting guess: ', seed)
+    if verbose: print('[' + heuristic + '] Testing wordle bot on ', len(testwords), ' previous wordle answers with starting guess: ', seed)
 
     guess_log = []
     for i, ans in enumerate(testwords):
@@ -52,7 +53,7 @@ def run_test(seed, verbose=True, heuristic='naive'):
 
     avg_guesses = sum(guess_log)/ len(guess_log)
 
-    if verbose: print("\naverage number of guesses for starting word {} is: {:.3f}".format(seed, avg_guesses))
+    # if verbose: print("\naverage number of guesses for starting word {} is: {:.3f}".format(seed, avg_guesses))
 
     return avg_guesses
 
@@ -84,7 +85,7 @@ def plot_start_words(start_words, avg_guesses):
     plt.show()
 
 if __name__ == '__main__':
-    
+
     # add other starting words you want to assess to this list
     popular_start_words = ['raise']
     avg_guesses = []
@@ -92,10 +93,9 @@ if __name__ == '__main__':
     for seed in popular_start_words:
         print('testing: \t', seed)
         # try for each heuristic
-        ### NOTE: second try of entropy does not work for some reason
-        for h in ['two_word']:
+        for h in ['naive', 'frequency', 'entropy', 'two_word']:
             avg = run_test(seed, verbose=True, heuristic=h)
-            print('\navg guesses for ', h, ': \t', avg)
+            print('\navg guesses for ', h, ' with starting word', seed, ': \t', avg, '\n\n')
         
         avg_guesses.append(avg)
     

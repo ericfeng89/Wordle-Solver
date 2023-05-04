@@ -4,7 +4,10 @@ from wordle_frequency import get_highest_frequency_word
 from wordle_information_theory import choose_word
 
 
-### Taken from the github repo
+### Source: gamescomputersplay (https://github.com/gamescomputersplay)
+# The original wordle class is lifted from this repo, however
+# significant changes have been made to every aspect of the class
+# to support our functionality and design
 class Wordle:
    ''' Class representing one wordle game.
    methods include initiating a secret word,
@@ -47,7 +50,8 @@ class Wordle:
        # Return True/False if you got the word right
        return word ==  self.correct_word
    
-   # works well, I think we could use the old possible guess list rather than regenerating for future scaling
+   # returns a list of possible guesses, preserving information gained from previous
+   # param validGuesses: list of possible words to choose from
    def naive_filter(self, validGuesses):
       # get last result and guess
        result = self.results[-1]
@@ -72,9 +76,10 @@ class Wordle:
        return guessFilter
 
 
-    # play a wordle game with naive strat, given startword
+    # play a wordle game with [heuristic] strat, given startword
     # returns i, the number of guesses to find the word
     # uses naive (random) word choice approach by default
+    # set verbose to false for faster evaluation
    def play_game(self, startword, verbose=True, heuristic='naive'):
         if verbose: print('GUESSING: ', startword)
             
@@ -105,7 +110,9 @@ class Wordle:
 
 
 
-
+# fetches the word list from a given file
+# can be used to load alternate word data, 
+# like for n letters or all 5-letter words
 def get_word_list(filename):
    words = []
    with open(filename, "r", encoding="UTF-8") as in_file:
@@ -113,20 +120,29 @@ def get_word_list(filename):
                words.append(line.strip())
    return words
 
-
+# global to store word list (can be imported in others)
 words_list = get_word_list("data/words-guess.txt")
 
+
+'''
+Run one or wordle game using each strategy
+to evaluate on all three,  change 'solution'
+to provide your own start, change 'startword'
+'''
 if __name__ == '__main__':
 
-    wordle = Wordle(words_list, correct_word='arrow')
+    startWord = 'raise'
+    solution   = 'arrow'
+
+    wordle = Wordle(words_list, correct_word=solution)
     wordle2 = Wordle(words_list, correct_word=wordle.correct_word)
     wordle3 = Wordle(words_list, correct_word=wordle.correct_word)
 
     print('correct word: ', wordle.correct_word)
 
-    num_guesses = wordle.play_game('raise', verbose=False, heuristic='naive')
-    num_guesses2 = wordle2.play_game('raise', verbose=False, heuristic='frequency')
-    num_guesses3 = wordle3.play_game('raise', verbose=False, heuristic='entropy')
+    num_guesses = wordle.play_game(startWord, verbose=False, heuristic='naive')
+    num_guesses2 = wordle2.play_game(startWord, verbose=False, heuristic='frequency')
+    num_guesses3 = wordle3.play_game(startWord, verbose=False, heuristic='entropy')
     
 
     print('Solved with naive heuristic in     ', num_guesses, ' guesses')

@@ -3,6 +3,10 @@ import random
 from wordle_naive import Wordle, words_list
 import matplotlib.pyplot as plt
 
+# number of test puzzles to validate on
+# max is 674 previous wordle answers, takes about 2 min
+TEST_SIZE = 100
+
 
 # function to retrieve words for testing from a txt file
 # previous_answers sourced from https://www.rockpapershotgun.com/wordle-past-answers 
@@ -14,14 +18,14 @@ def get_test_words():
     for word in mylist:
         testWords.append(word.lower())
 
-    # probably unnecessary considering all are used for avg calc
+    # shuffle the test set
     random.shuffle(testWords)
 
-    # idk why these are not included in our dataset...
+    # these are not included in our other datasets
     testWords.remove('snafu')
     testWords.remove('guano')
     
-    return testWords[:100]      # 674 total
+    return testWords[:TEST_SIZE]      # 674 total
 
 testwords = get_test_words()
 
@@ -41,7 +45,6 @@ def run_test(seed, verbose=True, heuristic='naive'):
         if verbose: print('\r[{}{}] {}/{}'.format('#' * num_bars, '-' * (40 - num_bars), i+1, len(testwords)), end='')
 
         game = Wordle(words_list, correct_word=ans)
-        # going to use start word "raise" as recommended here: https://www.tomsguide.com/news/best-wordle-start-words
         # note: startword is standardized to control testing
         guess_log.append(game.play_game(startword=seed, verbose=False, heuristic=heuristic))
 
@@ -81,9 +84,11 @@ def plot_start_words(start_words, avg_guesses):
     plt.show()
 
 if __name__ == '__main__':
-    # Entropy is breaking on first iter of second word
-    popular_start_words = ['raise', 'crate']
+
+    # add other starting words you want to assess to this list
+    popular_start_words = ['raise']
     avg_guesses = []
+    
     for seed in popular_start_words:
         print('testing: \t', seed)
         # try for each heuristic
@@ -91,9 +96,10 @@ if __name__ == '__main__':
         for h in ['naive', 'frequency', 'entropy']:
             avg = run_test(seed, verbose=True, heuristic=h)
             print('\navg guesses for ', h, ': \t', avg)
-        print('avg guesses: \t', avg)
+        
         avg_guesses.append(avg)
     
+    # can use below to display plt plots to compare starting words
     # plot_start_words(popular_start_words, avg_guesses)
 
     

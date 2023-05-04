@@ -21,7 +21,7 @@ def get_test_words():
     testWords.remove('snafu')
     testWords.remove('guano')
     
-    return testWords[:100]      # 674 total
+    return testWords[:]      # 674 total
 
 testwords = get_test_words()
 
@@ -83,13 +83,13 @@ def plot_start_words(start_words, avg_guesses):
 
 if __name__ == '__main__':
     # Entropy is breaking on first iter of second word
-    popular_start_words = ['raise', 'crane']
+    popular_start_words = ['raise']
     avg_guesses = []
     for seed in popular_start_words:
         print('testing: \t', seed)
         # try for each heuristic
         ### NOTE: second try of entropy does not work for some reason
-        for h in ['naive', 'frequency', 'entropy', 'two_word']:
+        for h in ['two_word']:
             avg = run_test(seed, verbose=True, heuristic=h)
             print('\navg guesses for ', h, ': \t', avg)
         print('avg guesses: \t', avg)
